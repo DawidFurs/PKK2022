@@ -1,88 +1,69 @@
-﻿#include <vector>
+﻿/**
+*   Autor projektu : Dawid Furs 
+*/
+
+#include <vector>
 #include <iostream>
+#include <stdio.h>
+#include <string.h>
 #include <vector>
 #include "TSP.cpp"
 #include "readFile.h"
+#include "Global.h"
+#include "writeFile.h"
 
 
 using namespace std;
+/**@brief
+* Funkcja main , zaczynam od ustawienia zmiennych string, które przechowywują 
+* nazwy plików tekstowych które zostają podane podczas uruchamiania programu 
+* z consoli 
+* 
+*/
 
-
-//**********************
-//*** Program główny ***
-//**********************
-
-int main()
+int main(int argc, char *argv[])
 {
-    checkFileExist();
+    string inputFileName ;          /**< inputFileName zawiera nazwę pliku wejściowego */
+    string outputFileName ;         ///@retval outputFileName zawiera nazwę pliku wyjściowego
 
-    int number{ amountOfVertex() };
-    int number1{ amoutOfEdges() };
-    n = number;
-    m = number1;
-
-
-    int i, j, x, y, z;
-
-
-    // Tworzymy struktury dynamiczne i inicjujemy je
-
-    S = new int[n];
-    Sh = new int[n];
-    visited = new bool[n];
-    A = new bool* [n];
-    for (i = 0; i < n; i++)
-    {
-        A[i] = new bool[n];
-        vector<int> temp;
-        for (j = 0; j < n; j++)
-        {
-            A[i][j] = false;
-            temp.push_back(0);
+    /**@brief Pętla sprawdzająca argumenty podane przy odpalaniu programu
+    * w momencie znalezienia odpowiedniego argumentu zostaje on przypisany do
+    * zmiennej string 
+    * 
+    */ 
+    cout << "\nCommand-line arguments:\n";
+    for (int count = 0; count < argc; count++) {
+        if (argv[count][0] == '-')
+        {   if(argv[count][1]=='i')
+            inputFileName = argv[count+1];
         }
-        visited[i] = false;
-        W.push_back(temp);
-    }
-    sptr = shptr = 0;
-
-    // Odczytujemy dane wejściowe
-
-    for (i = 0; i < m; i++)
-    {
-        cin >> x >> y >> z;
-        A[x][y] = A[y][x] = true; // Krawędź x-y
-        W[x][y] = W[y][x] = z;    // Waga krawędzi x-y
+        if (argv[count][0] == '-')
+        {   if(argv[count][1]=='o')
+            outputFileName = argv[count+1];
+        }
+        cout << "  argv[" << count << "]   " << argv[count] << "\n";
     }
 
-    cout << endl;
+    cout << "Plik wejsciowy to : " << inputFileName;
 
-    // Rozpoczynamy algorytm
+    
+    /// pierwsza funkcja sprawdzajaca czy plik do, ktorego chcemy otrzymac dostep istnieje
+    checkFileExist(inputFileName);
 
-    d = MAXINT;
-    dh = v0 = 0;
-    TSP(v0);
-    if (sptr)
-    {
-        for (i = 0; i < sptr; i++) cout << S[i] << " ";
-        cout << v0 << endl;
-        cout << "d = " << d << endl;
-    }
-    else cout << "NO HAMILTONIAN CYCLE" << endl;
+    /// Tworzymy struktury dynamiczne i inicjujemy je
+    createDynamicStructures(inputFileName);
 
-    cout << endl;
+    /// Odczytujemy dane wejściowe
 
-    // Usuwamy tablice dynamiczne
+    storeData(inputFileName);
 
-    delete[] S;
-    delete[] Sh;
-    delete[] visited;
+    /// Rozpoczynamy algorytm
 
-    for (i = 0; i < n; i++)
-    {
-        delete[] A[i];
-    }
+    startAlgorithm(outputFileName);
 
-    delete[] A;
+    /// Usuwamy tablice dynamiczne
+
+    clearAllocatedData();
 
 
     return 0;
